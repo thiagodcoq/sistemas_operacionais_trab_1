@@ -13,7 +13,8 @@
 void sys_call(IOinfo *io_info, char c) {
   io_info->type = c;
   io_info->pid_requester = getpid();
-  signal(getppid(), SIGRTMIN);
+  kill(getppid(), SIGRTMIN); // Avisa o Kernel
+  pause(); // espera o kernel agir
 }
 
 void filho1(IOinfo *io_info) {

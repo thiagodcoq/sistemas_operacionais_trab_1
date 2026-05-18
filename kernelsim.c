@@ -10,7 +10,20 @@
 
 #define QTD_FILHOS 3
 #define ICS 0
-void timeSliceHandler(int signal);
+
+int running = 0;
+int ready[QTD_FILHOS];
+int waiting[QTD_FILHOS];
+pid_t pids[QTD_FILHOS + 1];
+
+void timeSliceHandler(int signal) {
+    kill(pids[running], SIGSTOP);
+    fila_inserir(ready, QTD_FILHOS, running);
+    int proximo = fila_remover(ready, QTD_FILHOS);
+    if(proximo == -1) return; // ninguém pra rodar
+    running = proximo;
+    kill(pids[running], SIGCONT);
+}
 void IOreturnHandler(int signal);
 void IOrequestHandler(int signal);
 void selecionaRespectFilho(IOinfo *io_info, int i);
@@ -27,13 +40,8 @@ int main(int argc, char *argv[]) {
   signal(SIGUSR2, IOreturnHandler);
   signal(SIGRTMIN, IOrequestHandler);
 
-  int running = 0;
-  int ready[QTD_FILHOS];
-  int waiting[QTD_FILHOS];
   fila_criar(ready, QTD_FILHOS);
   fila_criar(waiting, QTD_FILHOS);
-
-  pid_t pids[QTD_FILHOS + 1];
 
   pids[ICS] = fork();
   if (pids[ICS] == 0) {
