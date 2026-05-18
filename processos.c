@@ -1,8 +1,11 @@
 #include "processos.h"
+#include "auxiliar.h"
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
+#include <stdio.h>
+
 
 #define MAX 30
 #ifndef SIGRTMIN
@@ -24,6 +27,7 @@ void sys_call(IOinfo *io_info, char c) {
 void filho1(IOinfo *io_info) {
 
   for (int i = 0; i < MAX; i++) {
+    print_time("[A1] PC=%d", i);
     if (i == 5 || i == 13) {
       sys_call(io_info, 'R');
     } else if (i == 27) {
@@ -39,6 +43,7 @@ void filho1(IOinfo *io_info) {
 void filho2(IOinfo *io_info) {
 
   for (int i = 0; i < MAX; i++) {
+    print_time("[A2] PC=%d", i);
     if (i == 8 || i == 19) {
       sys_call(io_info, 'R');
     }
@@ -52,6 +57,7 @@ void filho2(IOinfo *io_info) {
 void filho3(IOinfo *io_info) {
 
   for (int i = 0; i < MAX; i++) {
+    print_time("[A3] PC=%d", i);
     if (i == 2 || i == 10) {
       sys_call(io_info, 'R');
     } else if (i == 25) {
@@ -67,6 +73,7 @@ void filho3(IOinfo *io_info) {
 void filho4(IOinfo *io_info) {
 
   for (int i = 0; i < MAX; i++) {
+    print_time("[A4] PC=%d", i);
     if (i == 9) {
       sys_call(io_info, 'W');
     } else if (i == 25) {
@@ -82,6 +89,7 @@ void filho4(IOinfo *io_info) {
 void filho5(IOinfo *io_info) {
 
   for (int i = 0; i < MAX; i++) {
+    print_time("[A5] PC=%d", i);
     if (i == 15) {
       sys_call(io_info, 'W');
     }
@@ -95,6 +103,7 @@ void filho5(IOinfo *io_info) {
 void filho6(IOinfo *io_info) {
 
   for (int i = 0; i < MAX; i++) {
+    print_time("[A6] PC=%d", i);
     sleep(1);
   }
 
