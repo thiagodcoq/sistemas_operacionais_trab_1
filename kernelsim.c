@@ -15,23 +15,19 @@ int running = 0;
 int ready[QTD_FILHOS];
 int waiting[QTD_FILHOS];
 pid_t pids[QTD_FILHOS + 1];
+IOinfo *io_info;
 
-void timeSliceHandler(int signal) {
-    kill(pids[running], SIGSTOP);
-    fila_inserir(ready, QTD_FILHOS, running);
-    int proximo = fila_remover(ready, QTD_FILHOS);
-    if(proximo == -1) return; // ninguém pra rodar
-    running = proximo;
-    kill(pids[running], SIGCONT);
-}
+void timeSliceHandler(int signal);
+
 void IOreturnHandler(int signal);
+
 void IOrequestHandler(int signal);
+
 void selecionaRespectFilho(IOinfo *io_info, int i);
 int escalonador();
 
 int main(int argc, char *argv[]) {
-  int segmento;
-  IOinfo *io_info;
+  int segmento; 
   segmento = shmget(IPC_PRIVATE, sizeof(IOinfo),
                     IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
   io_info = (IOinfo *)shmat(segmento, 0, 0);
@@ -42,6 +38,9 @@ int main(int argc, char *argv[]) {
 
   fila_criar(ready, QTD_FILHOS);
   fila_criar(waiting, QTD_FILHOS);
+  for(int i = 1; i <= QTD_FILHOS; i++){
+    fila_inserir(ready, QTD_FILHOS, i);
+  }
 
   pids[ICS] = fork();
   if (pids[ICS] == 0) {
@@ -51,9 +50,15 @@ int main(int argc, char *argv[]) {
   for (int i = 1; i <= QTD_FILHOS; i++) {
     pids[i] = fork();
     if (pids[i] == 0) {
-      fila_inserir(ready, QTD_FILHOS, i);
       selecionaRespectFilho(io_info, i);
     }
+  }
+
+  escalonador();
+
+  while(1){
+      printf("[KernelSim] rodando\n");
+      sleep(1);
   }
 
   while (1) {
@@ -69,11 +74,41 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-void timeSliceHandler(int signal) { return; }
+void timeSliceHandler(int signal) {
+    kill(pids[running], SIGSTOP);
+    fila_inserir(ready, QTD_FILHOS, running);
+    int proximo = fila_remover(ready, QTD_FILHOS);
+    if(proximo == -1) return; // ninguém pra rodar
+    running = proximo;
+    kill(pids[running], SIGCONT);
+}
 
-void IOreturnHandler(int signal);
+void IOreturnHandler(int signal){
+  int indice = fila_remover(waiting,QTD_FILHOS);
+  if(indice == -1) return;
+  fila_inserir(ready,QTD_FILHOS,indice);
+}
 
-void IOrequestHandler(int signal);
+void IOrequestHandler(int signal) {
+    // acha o índice de quem pediu
+    int indice = -1;
+    for(int i = 1; i <= QTD_FILHOS; i++){
+        if(pids[i] == io_info->pid_requester){
+            indice = i;
+            break;
+        }
+    }
+    if(indice == -1) return;
+    
+    kill(pids[indice], SIGSTOP);          // bloqueia o processo
+    fila_inserir(waiting, QTD_FILHOS, indice); // coloca na fila waiting
+    kill(pids[ICS], SIGUSR2);             // avisa ICS pra contar 3s
+    
+    int proximo = fila_remover(ready, QTD_FILHOS);
+    if(proximo == -1) return;
+    running = proximo;
+    kill(pids[running], SIGCONT);
+}
 
 void selecionaRespectFilho(IOinfo *io_info, int i) {
   if (i == 1)
@@ -92,4 +127,8 @@ void selecionaRespectFilho(IOinfo *io_info, int i) {
   return;
 }
 
-int escalonador();
+int escalonador(){
+  running = fila_remover(ready,QTD_FILHOS);
+  if(running == -1) return -1;
+  kill(pids[running],SIGCONT);
+}
