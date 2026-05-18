@@ -2,8 +2,12 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
 
 #define MAX 30
+#ifndef SIGRTMIN
+#define SIGRTMIN 34
+#endif
 
 /*
  * Como as chamadas de IO so existem para um unico dispositivo, essa informacao

@@ -3,6 +3,7 @@
 #include <sys/signal.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <signal.h>
 
 pid_t kernel_id;
 IOinfo *shdIO_info;

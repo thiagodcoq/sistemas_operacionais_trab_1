@@ -7,9 +7,13 @@
 #include <sys/signal.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <signal.h>
 
 #define QTD_FILHOS 3
 #define ICS 0
+#ifndef SIGRTMIN
+#define SIGRTMIN 34
+#endif
 
 int running = 0;
 int ready[QTD_FILHOS];
