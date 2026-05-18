@@ -56,16 +56,10 @@ int main(int argc, char *argv[]) {
 
   escalonador();
 
-  while(1){
-      printf("[KernelSim] rodando\n");
-      sleep(1);
-  }
-
-  while (1) {
+  //ve se ta tudo vazio e ngm rodando
+  while(!(fila_vazia(ready, QTD_FILHOS) && fila_vazia(waiting, QTD_FILHOS) && running == 0)){
     printf("[KernelSim] rodando\n");
     sleep(1);
-    // TODO: adicionar comparador se todas as filas estao vazias
-    //   -> se estiverem = sai do while
   }
 
   shmdt(io_info);
