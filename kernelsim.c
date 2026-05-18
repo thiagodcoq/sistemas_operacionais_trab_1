@@ -1,6 +1,7 @@
 #include "fila.h"
 #include "ics.h"
 #include "processos.h"
+#include "auxiliar.h"
 #include <stdio.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
@@ -73,22 +74,27 @@ int main(int argc, char *argv[]) {
 }
 
 void timeSliceHandler(int signal) {
+    print_time("[Kernel] A%d pausado", running);
     kill(pids[running], SIGSTOP);
     fila_inserir(ready, QTD_FILHOS, running);
     int proximo = fila_remover(ready, QTD_FILHOS);
     if(proximo == -1) return; // ninguém pra rodar
     running = proximo;
     kill(pids[running], SIGCONT);
+    print_time("[Kernel] A%d rodando", running);
 }
 
 void IOreturnHandler(int signal){
-  int indice = fila_remover(waiting,QTD_FILHOS);
-  if(indice == -1) return;
-  fila_inserir(ready,QTD_FILHOS,indice);
+    print_time("[Kernel] I/O terminou, desbloqueando...");
+    int indice = fila_remover(waiting, QTD_FILHOS);
+    if(indice == -1) return;
+    print_time("[Kernel] A%d voltou pra fila ready", indice);
+    fila_inserir(ready, QTD_FILHOS, indice);
 }
 
 void IOrequestHandler(int signal) {
-    // acha o índice de quem pediu
+    print_time("[Kernel] syscall recebida de PID=%d", io_info->pid_requester);
+    
     int indice = -1;
     for(int i = 1; i <= QTD_FILHOS; i++){
         if(pids[i] == io_info->pid_requester){
@@ -96,13 +102,17 @@ void IOrequestHandler(int signal) {
             break;
         }
     }
+    print_time("[Kernel] indice encontrado = %d", indice);
+    
     if(indice == -1) return;
     
-    kill(pids[indice], SIGSTOP);          // bloqueia o processo
-    fila_inserir(waiting, QTD_FILHOS, indice); // coloca na fila waiting
-    kill(pids[ICS], SIGUSR2);             // avisa ICS pra contar 3s
+    print_time("[Kernel] A%d bloqueado por I/O", indice);
+    kill(pids[indice], SIGSTOP);
+    fila_inserir(waiting, QTD_FILHOS, indice);
+    kill(pids[ICS], SIGUSR2);
     
     int proximo = fila_remover(ready, QTD_FILHOS);
+    print_time("[Kernel] proximo a rodar = %d", proximo);
     if(proximo == -1) return;
     running = proximo;
     kill(pids[running], SIGCONT);
