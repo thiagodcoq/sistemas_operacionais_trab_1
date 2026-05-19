@@ -15,6 +15,7 @@ Ideia de syscall (pedido de IO) dos filhos:
 - Cada filho envia SIGRTMIN e envia em uma shmem seu PID.
 - SIGRTMIN eh um sinal de usuario
 * Como as chamadas de IO so existem para um unico dispositivo, essa informacao sera omitida. Informacoes sobre o tipo de pedido ('R' e 'W') serao usadas por didatismo, sem efeito pratico.
+- SIGRTMIN nao funciona no mac, tem que ser rodado no linux para funcionar este projeto.
 
 # Chamadas de IO de cada filho:
 filho1:
