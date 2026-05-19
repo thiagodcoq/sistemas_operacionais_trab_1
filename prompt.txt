@@ -1,0 +1,113 @@
+guilhermegratz@guilhermegratz-A320M-H:~/Documentos/PUC/so/trab1$ gcc kernelsim.c processos.c fila.c ics.c auxiliar.c -o kernelsim && ./kernelsim
+[11:31:35] [A1] PC=0
+[11:31:36] [Kernel] A1 pausado
+[11:31:36] [Kernel] A2 rodando
+[11:31:36] [A2] PC=0
+[11:31:37] [Kernel] A2 pausado
+[11:31:37] [Kernel] A3 rodando
+[11:31:37] [A3] PC=0
+[11:31:38] [A3] PC=1
+[11:31:38] [Kernel] A3 pausado
+[11:31:38] [Kernel] A1 rodando
+[11:31:38] [A1] PC=1
+[11:31:39] [A1] PC=2
+[11:31:39] [Kernel] A1 pausado
+[11:31:39] [Kernel] A2 rodando
+[11:31:39] [A2] PC=1
+[11:31:40] [Kernel] A2 pausado
+[11:31:40] [Kernel] A3 rodando
+[11:31:40] [Kernel] syscall recebida de PID=43282
+[11:31:40] [Kernel] indice encontrado = 3
+[11:31:40] [Kernel] A3 bloqueado por I/O
+[11:31:40] [Kernel] proximo a rodar = 1
+[11:31:40] [A1] PC=3
+[11:31:40] [Kernel] syscall recebida de PID=43280
+[11:31:40] [Kernel] indice encontrado = 1
+[11:31:40] [Kernel] A1 bloqueado por I/O
+[11:31:40] [Kernel] proximo a rodar = 2
+[11:31:40] [A2] PC=2
+[11:31:41] [A2] PC=3
+[11:31:42] [A2] PC=4
+[11:31:43] [Kernel] I/O terminou, desbloqueando...
+[11:31:43] [Kernel] A3 voltou pra fila ready
+[11:31:43] [A2] PC=5
+[11:31:43] [Kernel] I/O terminou, desbloqueando...
+[11:31:43] [Kernel] A1 voltou pra fila ready
+[11:31:43] [Kernel] A2 pausado
+[11:31:43] [Kernel] A3 rodando
+[11:31:43] [A3] PC=2
+[11:31:43] [Kernel] syscall recebida de PID=43282
+[11:31:43] [Kernel] indice encontrado = 3
+[11:31:43] [Kernel] A3 bloqueado por I/O
+[11:31:43] [Kernel] proximo a rodar = 1
+[11:31:43] [A1] PC=4
+[11:31:43] [Kernel] A1 pausado
+[11:31:43] [Kernel] A2 rodando
+[11:31:44] [A2] PC=6
+[11:31:44] [Kernel] A2 pausado
+[11:31:44] [Kernel] A1 rodando
+[11:31:44] [A1] PC=5
+[11:31:44] [Kernel] syscall recebida de PID=43280
+[11:31:44] [Kernel] indice encontrado = 1
+[11:31:44] [Kernel] A1 bloqueado por I/O
+[11:31:44] [Kernel] proximo a rodar = 2
+[11:31:45] [A2] PC=7
+[11:31:46] [A2] PC=8
+[11:31:46] [Kernel] syscall recebida de PID=43281
+[11:31:46] [Kernel] indice encontrado = 2
+[11:31:46] [Kernel] A2 bloqueado por I/O
+[11:31:46] [Kernel] proximo a rodar = -1
+[11:31:46] [Kernel] I/O terminou, desbloqueando...
+[11:31:46] [Kernel] A3 voltou pra fila ready
+[11:31:46] [Kernel] A2 pausado
+[11:31:46] [Kernel] A3 rodando
+[11:31:46] [A3] PC=3
+[11:31:47] [Kernel] A3 pausado
+[11:31:47] [Kernel] A2 rodando
+[11:31:47] [A2] PC=9
+[11:31:47] [Kernel] syscall recebida de PID=43281
+[11:31:47] [Kernel] indice encontrado = 2
+[11:31:47] [Kernel] A2 bloqueado por I/O
+[11:31:47] [Kernel] proximo a rodar = 3
+[11:31:47] [A3] PC=4
+[11:31:47] [Kernel] I/O terminou, desbloqueando...
+[11:31:47] [Kernel] A1 voltou pra fila ready
+[11:31:47] [Kernel] A3 pausado
+[11:31:47] [Kernel] A1 rodando
+[11:31:47] [A1] PC=6
+[11:31:48] [Kernel] A1 pausado
+[11:31:48] [Kernel] A3 rodando
+[11:31:48] [A3] PC=5
+[11:31:48] [Kernel] syscall recebida de PID=43282
+[11:31:48] [Kernel] indice encontrado = 3
+[11:31:48] [Kernel] A3 bloqueado por I/O
+[11:31:48] [Kernel] proximo a rodar = 1
+[11:31:48] [A1] PC=7
+[11:31:48] [Kernel] syscall recebida de PID=43280
+[11:31:48] [Kernel] indice encontrado = 1
+[11:31:48] [Kernel] A1 bloqueado por I/O
+[11:31:48] [Kernel] proximo a rodar = -1
+[11:31:49] [Kernel] I/O terminou, desbloqueando...
+[11:31:49] [Kernel] A2 voltou pra fila ready
+[11:31:49] [Kernel] A1 pausado
+[11:31:49] [Kernel] A2 rodando
+[11:31:49] [Kernel] A2 terminou
+[11:31:50] [Kernel] I/O terminou, desbloqueando...
+[11:31:50] [Kernel] A2 voltou pra fila ready
+[11:31:50] [A1] PC=8
+[11:31:50] [Kernel] A1 pausado
+[11:31:50] [Kernel] A2 rodando
+[11:31:51] [Kernel] I/O terminou, desbloqueando...
+[11:31:51] [Kernel] A3 voltou pra fila ready
+[11:31:51] [Kernel] A2 pausado
+[11:31:51] [Kernel] A1 rodando
+[11:31:51] [A1] PC=9
+[11:31:51] [Kernel] I/O terminou, desbloqueando...
+[11:31:52] [Kernel] A1 pausado
+[11:31:52] [Kernel] A3 rodando
+[11:31:52] [A3] PC=6
+[11:31:53] [Kernel] A3 pausado
+[11:31:53] [Kernel] A2 rodando
+[11:31:54] [Kernel] A2 pausado
+[11:31:54] [Kernel] A1 rodando
+[11:31:54] [Kernel] A1 terminou

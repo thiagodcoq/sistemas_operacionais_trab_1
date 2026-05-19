@@ -97,12 +97,16 @@ void timeSliceHandler(int signal) {
 }
 
 void IOreturnHandler(int signal) {
-  print_time("[Kernel] I/O terminou, desbloqueando...");
   int indice = fila_remover(waiting, QTD_FILHOS);
   if (indice == -1)
     return;
+  print_time("[Kernel] I/O terminou, desbloqueando...");
   print_time("[Kernel] A%d voltou pra fila ready", indice);
   fila_inserir(ready, QTD_FILHOS, indice);
+
+  if (running == 0) {
+    escalonador();
+  }
 }
 
 void IOrequestHandler(int signal) {
