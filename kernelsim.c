@@ -79,13 +79,20 @@ void timeSliceHandler(int signal) {
     return;
   if (fila_vazia(ready, QTD_FILHOS))
     return;
-  int proximo = fila_remover(ready, QTD_FILHOS);
-  if (proximo == -1)
-    return; // ninguém pra rodar
 
-  kill(pids[running], SIGSTOP);
-  print_time("[Kernel] A%d pausado", running);
-  fila_inserir(ready, QTD_FILHOS, running);
+  int proximo;
+  do {
+    proximo = fila_remover(ready, QTD_FILHOS);
+  } while (proximo != -1 && pids[proximo] == 0);
+
+  if (proximo == -1)
+    return;
+
+  if (running > 0 && pids[running] != 0) {
+    kill(pids[running], SIGSTOP);
+    print_time("[Kernel] A%d pausado", running);
+    fila_inserir(ready, QTD_FILHOS, running);
+  }
 
   running = proximo;
 
@@ -129,8 +136,12 @@ void IOrequestHandler(int signal) {
 
   int proximo = fila_remover(ready, QTD_FILHOS);
   print_time("[Kernel] proximo a rodar = %d", proximo);
-  if (proximo == -1)
+  
+  if (proximo == -1) {
+    running = 0; 
     return;
+  }
+
   running = proximo;
   kill(pids[running], SIGCONT);
 }
@@ -153,9 +164,18 @@ void selecionaRespectFilho(IOinfo *io_info, int i) {
 }
 
 int escalonador() {
-  running = fila_remover(ready, QTD_FILHOS);
-  if (running == -1)
+  int prox;
+  
+  do {
+    prox = fila_remover(ready, QTD_FILHOS);
+  } while (prox != -1 && pids[prox] == 0);
+
+  if (prox == -1) {
+    running = 0; 
     return -1;
+  }
+  
+  running = prox;
   kill(pids[running], SIGCONT);
   return 0;
 }
@@ -169,11 +189,14 @@ void childHandler(int signal) {
       if (pids[i] == morto) {
         print_time("[Kernel] A%d terminou", i);
         processos_vivos--;
-        if (running == i)
+        pids[i] = 0; 
+
+        if (running == i) {
+          running = 0; 
           escalonador();
-        return;
+        }
+        break; 
       }
     }
-    // Se não encontrou, era filho do ICS
   }
 }
