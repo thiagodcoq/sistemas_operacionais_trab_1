@@ -43,9 +43,6 @@ int main(int argc, char *argv[]) {
 
   fila_criar(ready, QTD_FILHOS);
   fila_criar(waiting, QTD_FILHOS);
-  for (int i = 1; i <= QTD_FILHOS; i++) {
-    fila_inserir(ready, QTD_FILHOS, i);
-  }
 
   pids[ICS] = fork();
   if (pids[ICS] == 0) {
@@ -58,14 +55,14 @@ int main(int argc, char *argv[]) {
       selecionaRespectFilho(io_info, i);
     } else {
       kill(pids[i], SIGSTOP);
+      fila_inserir(ready, QTD_FILHOS, i);
     }
   }
 
   escalonador();
 
-  // ve se ta tudo vazio e ngm rodando
   while (processos_vivos > 0) {
-    sleep(1);
+    usleep(500);
   }
 
   kill(pids[ICS], SIGTERM);
@@ -168,15 +165,13 @@ void childHandler(int signal) {
   pid_t morto;
 
   while ((morto = waitpid(-1, &status, WNOHANG)) > 0) {
-    int encontrado = 0;
     for (int i = 1; i <= QTD_FILHOS; i++) {
       if (pids[i] == morto) {
         print_time("[Kernel] A%d terminou", i);
         processos_vivos--;
         if (running == i)
-          running = 0;
-        encontrado = 1;
-        break;
+          escalonador();
+        return;
       }
     }
     // Se não encontrou, era filho do ICS
