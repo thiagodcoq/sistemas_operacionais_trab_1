@@ -144,6 +144,8 @@ void IOrequestHandler(int signal) {
 
   running = proximo;
   kill(pids[running], SIGCONT);
+  print_time("[Kernel] A%d rodando", running); 
+
 }
 
 void selecionaRespectFilho(IOinfo *io_info, int i) {
@@ -177,6 +179,7 @@ int escalonador() {
   
   running = prox;
   kill(pids[running], SIGCONT);
+  print_time("[Kernel] A%d rodando", running); 
   return 0;
 }
 
